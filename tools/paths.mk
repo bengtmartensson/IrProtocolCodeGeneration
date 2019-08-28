@@ -9,3 +9,6 @@ JAVA := java
 SAXON_JAR := /opt/saxon/saxon9he.jar
 SAXON := $(JAVA) -jar $(SAXON_JAR)
 XSLTPROC := xsltproc
+IRPTRANSMOGRIFIER_HOME := /usr/local/share/irptransmogrifier
+#IRPTRANSMOGRIFIER := $(IRPTRANSMOGRIFIER_HOME)/irptransmogrifier.sh
+IRPTRANSMOGRIFIER := irptransmogrifier

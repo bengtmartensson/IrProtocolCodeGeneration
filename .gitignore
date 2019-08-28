@@ -1,0 +1,5 @@
+/target/
+lirc.xml.old
+lirc.xml
+all-protocols.xml
+*~
