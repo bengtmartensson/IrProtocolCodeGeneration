@@ -57,7 +57,7 @@ ClassBody() ::= <<
 
 DeclareParameterlessConstructor() ::= <<
 public <ClassName()>() throws IOException, SAXException, IrpException, IrpParseException {
-    irpDatabase = new IrpDatabase(configFile);
+    irpDatabase = new IrpDatabase((String) null);
     irpDatabase.expand();
     prot = irpDatabase.getNamedProtocol("<metaData.protocolName>");
 }
