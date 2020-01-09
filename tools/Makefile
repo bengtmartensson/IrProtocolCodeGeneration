@@ -9,8 +9,8 @@ include $(MYDIR)/paths.mk
 include $(MYDIR)/java-test-renderer-protocols.mk
 include $(MYDIR)/java-test-decoder-protocols.mk
 
-EXTRACT_VERSION := $(TOP)/tools/extract_project_version.xsl
-VERSION := $(shell $(XSLTPROC) $(EXTRACT_VERSION) pom.xml)
+EXTRACT_VERSION := $(IRPTRANSMOGRIFIER_HOME)/tools/extract_project_version.xsl
+VERSION := $(shell $(XSLTPROC) $(EXTRACT_VERSION) $(IRPTRANSMOGRIFIER_HOME)/pom.xml)
 IRPPROTOCOLS_XML := $(IRPTRANSMOGRIFIER_HOME)/IrpProtocols.xml
 XSLT_DIR := $(TOP)/src/main/xslt
 LIRC_TRANSFORM=$(XSLT_DIR)/lirc.xsl
@@ -36,10 +36,15 @@ all-protocols.xml: $(IRP_TRANSMOGRIFIER_JAR)
 lirc.xml: all-protocols.xml ${LIRC_TRANSFORM}
 	$(SAXON) -s:$< -xsl:${LIRC_TRANSFORM} -o:$@
 
-install-lirc.xml: ../harctoolboxbundle/src/main/config/exportformats.d/lirc.xml lirc.xml
+install-lirc.xml: $(OLD_LIRC_XML)
 
-../harctoolboxbundle/src/main/config/exportformats.d/lirc.xml: lirc.xml
+$(OLD_LIRC_XML): lirc.xml
 	cp $< $@
+
+diffuse: lirc.xml
+	diffuse $(OLD_LIRC_XML) lirc.xml
+
+install: install-lirc.xml
 
 javacodetest: javarendertest javadecodertest
 	mvn test
