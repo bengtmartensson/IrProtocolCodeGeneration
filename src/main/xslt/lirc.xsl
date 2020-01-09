@@ -140,7 +140,7 @@ end remote
     </axsl:template>
 
     <axsl:template match="girr:command">
-        <axsl:text>&#9;&#9;# </axsl:text>
+        <axsl:text># </axsl:text>
         <axsl:value-of select="translate(@name, ' ', '_')"/>
         <axsl:text xml:space="preserve"> not renderable, skipped
 </axsl:text>
