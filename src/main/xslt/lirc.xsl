@@ -107,7 +107,7 @@
 #
 </axsl:text>
                 <axsl:apply-templates>
-                    <xsl:attribute name="select">girr:commandSet</xsl:attribute>
+                    <xsl:attribute name="select">//girr:parameters[@protocol[not(. = ../../preceding-sibling::*//@protocol)]]</xsl:attribute>
                 </axsl:apply-templates>
             </axsl:template>
 
@@ -297,16 +297,17 @@ end remote
         <xsl:text xml:space="preserve">&#10;&#10;</xsl:text>
         <xsl:comment> ################## Protocol <xsl:value-of select="../@name"/> ################ </xsl:comment>
         <xsl:text xml:space="preserve">&#10;</xsl:text>
-        <xsl:comment xml:space="preserve"> IRP: <xsl:value-of select="../Irp"/> </xsl:comment>
+        <xsl:comment xml:space="preserve"> IRP:<xsl:value-of select="../Irp"/> </xsl:comment>
         <xsl:text xml:space="preserve">&#10;</xsl:text>
         <axsl:template>
-            <xsl:attribute name="match">girr:commandSet[girr:command/girr:parameters/@protocol = '<xsl:value-of select="lower-case(../@name)"/>']</xsl:attribute>
+            <xsl:attribute name="match">girr:parameters[@protocol = '<xsl:value-of select="lower-case(../@name)"/>']</xsl:attribute>
             <xsl:text xml:space="preserve">&#10;</xsl:text>
             <xsl:apply-templates select="BitspecIrstream" mode="warnIntroAndRepeat"/>
             <xsl:apply-templates select="BitspecIrstream" mode="warnEnding"/>
-            <axsl:text xml:space="preserve">begin remote&#10;# Protocol name: <xsl:value-of select="../@name"/>&#10;&#9;name&#9;&#9;</axsl:text>
-            <axsl:value-of select="translate(../@name, ' ', '_')"/>
-<axsl:text>
+            <axsl:text xml:space="preserve">
+begin remote&#10;# Protocol name: <xsl:value-of select="../@name"/>&#10;&#9;name&#9;&#9;</axsl:text>
+            <axsl:value-of select="translate(../../../@name, ' ', '_')"/>
+<axsl:text><xsl:text>-</xsl:text><xsl:value-of select="lower-case(../@name)"/>
 <xsl:apply-templates select="BitspecIrstream" mode="numberOfBits"/>
 &#9;flags&#9;&#9;<xsl:apply-templates select="@pwm2"/><xsl:apply-templates select="@pwm4"/><xsl:apply-templates select="@biphase"/>
             <xsl:apply-templates select="BitspecIrstream/NormalForm/*[FiniteBitField][1]/Extent" mode="flags"/>
@@ -325,7 +326,13 @@ end remote
 &#9;frequency&#9;<xsl:value-of select="GeneralSpec/@frequency"/>
 &#9;begin codes
 </axsl:text>
-        <axsl:apply-templates select="//girr:command"/>
+        <axsl:apply-templates>
+            <xsl:attribute name="select">
+                <xsl:text>/*//girr:command[girr:parameters[@protocol = &apos;</xsl:text>
+                <xsl:value-of select="lower-case(../@name)"/>
+                <xsl:text>&apos;]]</xsl:text>
+            </xsl:attribute>
+        </axsl:apply-templates>
         <axsl:text>&#9;end codes
 end remote
 </axsl:text>
