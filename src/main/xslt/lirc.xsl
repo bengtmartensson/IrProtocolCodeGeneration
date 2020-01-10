@@ -99,6 +99,11 @@
                     <xsl:attribute name="select">@displayName</xsl:attribute>
                 </axsl:value-of>
                 <axsl:text>
+# Device Class: </axsl:text>
+                <axsl:value-of>
+                    <xsl:attribute name="select">@deviceClass</xsl:attribute>
+                </axsl:value-of>
+                <axsl:text>
 # Remotename: </axsl:text>
                 <axsl:value-of>
                     <xsl:attribute name="select">@remoteName</xsl:attribute>
@@ -116,27 +121,29 @@
             <xsl:comment> ################ Default protocol rule, raw codes ############## </xsl:comment>
             <xsl:text xml:space="preserve">&#10;</xsl:text>
             <axsl:template>
-                <xsl:attribute name="match">girr:commandSet</xsl:attribute>
-                <axsl:text>begin remote
+                <xsl:attribute name="match">girr:parameters</xsl:attribute>
+                <axsl:text>
+# Raw signals
+begin remote
 &#9;name&#9;&#9;</axsl:text>
                 <axsl:value-of>
-                    <xsl:attribute name="select">translate(../@name, ' ', '_')</xsl:attribute>
+                    <xsl:attribute name="select">translate(../../../@name, ' ', '_')</xsl:attribute>
                 </axsl:value-of>
-                <axsl:text>
+                <axsl:text>-raw
 &#9;flags&#9;&#9;RAW_CODES
 &#9;eps&#9;&#9;<xsl:value-of select="round(100*number(/NamedProtocols/@relative-tolerance))"/>
 &#9;aeps&#9;&#9;<xsl:value-of select="round(/NamedProtocols/@absolute-tolerance)"/>
 &#9;frequency&#9;</axsl:text>
         <axsl:value-of>
-            <xsl:attribute name="select">//girr:command[1]/girr:raw/@frequency</xsl:attribute>
+            <xsl:attribute name="select">/*//girr:command[1]/girr:raw/@frequency</xsl:attribute>
         </axsl:value-of>
         <axsl:text>
 &#9;gap&#9;&#9;</axsl:text>
-        <axsl:value-of select="//girr:command[1]/girr:raw/girr:repeat/girr:gap[position()=last()]"/>
+        <axsl:value-of select="/*//girr:command[1]/girr:raw/girr:repeat/girr:gap[position()=last()]"/>
         <axsl:text>
 &#9;begin raw_codes
 </axsl:text>
-        <axsl:apply-templates select="//girr:command"/>
+        <axsl:apply-templates select="/*//girr:command[girr:raw]" mode="raw"/>
         <axsl:text>&#9;end raw_codes
 end remote
 </axsl:text>
@@ -149,7 +156,7 @@ end remote
 </axsl:text>
     </axsl:template>
 
-    <axsl:template match="girr:command[girr:raw]">
+    <axsl:template match="girr:command[girr:raw]" mode="raw">
         <axsl:text>&#9;&#9;name </axsl:text>
         <axsl:value-of select="translate(@name, ' ', '_')"/>
         <axsl:text xml:space="preserve">
@@ -305,7 +312,8 @@ end remote
             <xsl:apply-templates select="BitspecIrstream" mode="warnIntroAndRepeat"/>
             <xsl:apply-templates select="BitspecIrstream" mode="warnEnding"/>
             <axsl:text xml:space="preserve">
-begin remote&#10;# Protocol name: <xsl:value-of select="../@name"/>&#10;&#9;name&#9;&#9;</axsl:text>
+# Protocol name: <xsl:value-of select="../@name"/>
+begin remote&#10;&#9;name&#9;&#9;</axsl:text>
             <axsl:value-of select="translate(../../../@name, ' ', '_')"/>
 <axsl:text><xsl:text>-</xsl:text><xsl:value-of select="lower-case(../@name)"/>
 <xsl:apply-templates select="BitspecIrstream" mode="numberOfBits"/>
