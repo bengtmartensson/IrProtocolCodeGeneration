@@ -5,14 +5,12 @@
     xmlns:exportformats="http://www.harctoolbox.org/exportformats"
     xmlns:harctoolbox="http://www.harctoolbox.org"
     version="2.0">
+    <!-- Note: this file is XSLT 2.0, the generated file is XSLT 1.0 -->
 
     <xsl:namespace-alias stylesheet-prefix="axsl" result-prefix="xsl"/>
 
     <xsl:output method="xml" indent="yes" encoding="UTF-8"/>
     <xsl:strip-space elements="*"/>
-
-    <xsl:param name="eps" select="'30'"/>
-    <xsl:param name="aeps" select= "'100'"/>
 
     <xsl:function name="harctoolbox:canonical-name">
         <xsl:param name="str"/>
@@ -30,6 +28,11 @@
             Command- and remote names are required just to consist of
             non-whitespace characters. We therefore use translate(*, ' ', '_')
             instead of something more elaborate.
+
+            Generating program: <xsl:value-of select="/NamedProtocols/@program-version"/>
+            IRP database version: <xsl:value-of select="/NamedProtocols/@version"/>
+            <xsl:text>
+</xsl:text>
 </xsl:comment>
         <exportformats:exportformat>
             <xsl:attribute name="name">Lirc</xsl:attribute>
@@ -121,8 +124,8 @@
                 </axsl:value-of>
                 <axsl:text>
 &#9;flags&#9;&#9;RAW_CODES
-&#9;eps&#9;&#9;30
-&#9;aeps&#9;&#9;100
+&#9;eps&#9;&#9;<xsl:value-of select="round(100*number(/NamedProtocols/@relative-tolerance))"/>
+&#9;aeps&#9;&#9;<xsl:value-of select="round(/NamedProtocols/@absolute-tolerance)"/>
 &#9;frequency&#9;</axsl:text>
         <axsl:value-of>
             <xsl:attribute name="select">//girr:command[1]/girr:raw/@frequency</xsl:attribute>
@@ -307,8 +310,8 @@ end remote
 <xsl:apply-templates select="BitspecIrstream" mode="numberOfBits"/>
 &#9;flags&#9;&#9;<xsl:apply-templates select="@pwm2"/><xsl:apply-templates select="@pwm4"/><xsl:apply-templates select="@biphase"/>
             <xsl:apply-templates select="BitspecIrstream/NormalForm/*[FiniteBitField][1]/Extent" mode="flags"/>
-&#9;eps&#9;&#9;<xsl:value-of select="$eps"/>
-&#9;aeps&#9;&#9;<xsl:value-of select="$aeps"/>
+&#9;eps&#9;&#9;<xsl:value-of select="round(100*number(../@relative-tolerance))"/>
+&#9;aeps&#9;&#9;<xsl:value-of select="round(../@absolute-tolerance)"/>
 <xsl:apply-templates select="BitspecIrstream/BitSpec/BareIrStream[1]" mode="define-zero"/>
 <xsl:apply-templates select="BitspecIrstream/BitSpec/BareIrStream[2]" mode="define-one"/>
 <xsl:apply-templates select="BitspecIrstream/BitSpec/BareIrStream[3]" mode="define-two"/>
