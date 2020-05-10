@@ -227,11 +227,20 @@ end remote
     </xsl:template>
 
     <!-- Nuke protocols with hierarchical BitspecIrstream -->
-    <xsl:template match="NamedProtocol[Protocol/BitspecIrstream/IrStream/BitspecIrstream]" priority='99'>
+    <xsl:template match="NamedProtocol[Protocol/BitspecIrstream//BitspecIrstream]" priority='99'>
         <xsl:comment>
             <xsl:text> Protocol </xsl:text>
             <xsl:value-of select="@name"/>
             <xsl:text> omitted: Hierarchical BitspecIrStreams </xsl:text>
+        </xsl:comment>
+    </xsl:template>
+
+    <!-- Nuke biphase protocols with Gap between FiniteBitFields -->
+    <xsl:template match="NamedProtocol[Protocol[@biphase='true']//IrStream/Gap[preceding-sibling::FiniteBitField and following-sibling::FiniteBitField]]" priority='399'>
+        <xsl:comment>
+            <xsl:text> Protocol </xsl:text>
+            <xsl:value-of select="@name"/>
+            <xsl:text> omitted: Interleaved bitfields and durations</xsl:text>
         </xsl:comment>
     </xsl:template>
 
@@ -786,15 +795,6 @@ end remote
 
     <xsl:template match="Extent" mode="flags">
         <xsl:text>|CONST_LENGTH</xsl:text>
-    </xsl:template>
-
-    <!-- Hardcoded special cases -->
-    <xsl:template match="Protocol[../@name='MCE']" priority='9999'>
-        <xsl:comment>
-            <xsl:text> Protocol </xsl:text>
-            <xsl:value-of select="../@name"/>
-            <xsl:text> omitted: Interleaved bitfields and durations </xsl:text>
-        </xsl:comment>
     </xsl:template>
 
 </xsl:transform>
