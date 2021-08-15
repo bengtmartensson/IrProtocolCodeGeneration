@@ -14,7 +14,7 @@
 
     <xsl:function name="harctoolbox:canonical-name">
         <xsl:param name="str"/>
-        <xsl:value-of select="replace(lower-case($str), '[^_0-9a-z-]', '-')"/>
+        <xsl:value-of select="replace($str, '[^_0-9a-z-]', '-')"/>
     </xsl:function>
 
     <!-- default template for elements is to just ignore -->
@@ -316,7 +316,7 @@ end remote
         <xsl:comment xml:space="preserve"> IRP:<xsl:value-of select="../Irp"/> </xsl:comment>
         <xsl:text xml:space="preserve">&#10;</xsl:text>
         <axsl:template>
-            <xsl:attribute name="match">girr:parameters[@protocol = '<xsl:value-of select="lower-case(../@name)"/>']</xsl:attribute>
+            <xsl:attribute name="match">girr:parameters[@protocol = '<xsl:value-of select="../@name"/>']</xsl:attribute>
             <xsl:text xml:space="preserve">&#10;</xsl:text>
             <xsl:apply-templates select="BitspecIrstream" mode="warnIntroAndRepeat"/>
             <xsl:apply-templates select="BitspecIrstream" mode="warnEnding"/>
@@ -324,7 +324,7 @@ end remote
 # Protocol name: <xsl:value-of select="../@name"/>
 begin remote&#10;&#9;name&#9;&#9;</axsl:text>
             <axsl:value-of select="translate(../../../@name, ' ', '_')"/>
-<axsl:text><xsl:text>-</xsl:text><xsl:value-of select="lower-case(../@name)"/>
+<axsl:text><xsl:text>-</xsl:text><xsl:value-of select="../@name"/>
 <xsl:apply-templates select="BitspecIrstream" mode="numberOfBits"/>
 &#9;flags&#9;&#9;<xsl:apply-templates select="@pwm2"/><xsl:apply-templates select="@pwm4"/><xsl:apply-templates select="@biphase"/>
             <xsl:apply-templates select="BitspecIrstream/NormalForm/*[FiniteBitField][1]/Extent" mode="flags"/>
@@ -346,7 +346,7 @@ begin remote&#10;&#9;name&#9;&#9;</axsl:text>
         <axsl:apply-templates>
             <xsl:attribute name="select">
                 <xsl:text>/*//girr:command[girr:parameters[@protocol = &apos;</xsl:text>
-                <xsl:value-of select="lower-case(../@name)"/>
+                <xsl:value-of select="../@name"/>
                 <xsl:text>&apos;]]</xsl:text>
             </xsl:attribute>
         </axsl:apply-templates>
@@ -400,7 +400,7 @@ end remote
         <axsl:template>
             <xsl:attribute name="match" xml:space="skip">
                 <xsl:text>girr:command[girr:parameters/@protocol='</xsl:text>
-                <xsl:value-of select="lower-case(../../../../@name)"/>
+                <xsl:value-of select="../../../../@name"/>
                 <xsl:text>'</xsl:text>
             <xsl:apply-templates select="../../../ParameterSpecs/ParameterSpec[Default]" mode="default-path"/>]</xsl:attribute>
             <axsl:call-template>
@@ -417,7 +417,7 @@ end remote
     <xsl:template match="Intro|Repeat" mode="withDefaults">
         <xsl:comment> Version with defaults </xsl:comment>
         <axsl:template>
-            <xsl:attribute name="match">girr:command[girr:parameters/@protocol='<xsl:value-of select="lower-case(../../../../@name)"/>']</xsl:attribute>
+            <xsl:attribute name="match">girr:command[girr:parameters/@protocol='<xsl:value-of select="../../../../@name"/>']</xsl:attribute>
             <axsl:call-template>
                 <xsl:attribute xml:space="skip" name="name">
                     <xsl:text>command-</xsl:text>
