@@ -9,7 +9,7 @@ include $(MYDIR)/paths.mk
 include $(MYDIR)/java-test-renderer-protocols.mk
 include $(MYDIR)/java-test-decoder-protocols.mk
 
-EXTRACT_VERSION := $(IRPTRANSMOGRIFIER_HOME)/tools/extract_project_version.xsl
+EXTRACT_VERSION := $(IRPTRANSMOGRIFIER_HOME)/common/xslt/extract_project_version.xsl
 VERSION := $(shell $(XSLTPROC) $(EXTRACT_VERSION) $(IRPTRANSMOGRIFIER_HOME)/pom.xml)
 IRPPROTOCOLS_XML := $(IRPTRANSMOGRIFIER_HOME)/IrpProtocols.xml
 XSLT_DIR := $(TOP)/src/main/xslt
@@ -42,7 +42,7 @@ $(OLD_LIRC_XML): lirc.xml
 	cp $< $@
 
 diffuse: lirc.xml
-	diffuse $(OLD_LIRC_XML) lirc.xml
+	kdiff3 $(OLD_LIRC_XML) lirc.xml
 
 install: install-lirc.xml
 
