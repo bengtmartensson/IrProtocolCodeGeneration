@@ -206,78 +206,69 @@ end remote
         <xsl:apply-templates select="Protocol"/>
     </xsl:template>
 
-    <!-- Have not implemented non-constant definitions yet -->
-    <xsl:template match="NamedProtocol[Protocol/Definitions/Definition/Expression[not(Number)]]" priority="11">
+    <xsl:template name="omitted-protocol">
+        <xsl:param name="msg"/>
+        <xsl:text xml:space="preserve">&#10;&#10;</xsl:text>
         <xsl:comment>
             <xsl:text> Protocol </xsl:text>
             <xsl:value-of select="@name"/>
-            <xsl:text> omitted: Non-constant definitions not yet implemented </xsl:text>
+            <xsl:text> omitted: </xsl:text>
+            <xsl:value-of select="$msg"/>
+            <xsl:text>.</xsl:text>
         </xsl:comment>
+    </xsl:template>
+
+    <!-- Have not implemented non-constant definitions yet -->
+    <xsl:template match="NamedProtocol[Protocol/Definitions/Definition/Expression[not(Number)]]" priority="11">
+        <xsl:call-template name="omitted-protocol">
+            <xsl:with-param name="msg">Non-constant definitions not yet implemented</xsl:with-param>
+        </xsl:call-template>
     </xsl:template>
 
     <!-- Nuke protocols with too many bits -->
     <xsl:template match="NamedProtocol[Protocol/BitspecIrstream/IrStream/@numberOfBits &gt; 64]">
-        <xsl:comment>
-            <xsl:text> Protocol </xsl:text>
-            <xsl:value-of select="@name"/>
-            <xsl:text> omitted: Too many bits (</xsl:text>
+        <xsl:call-template name="omitted-protocol">
+            <xsl:with-param name="msg">
+                <xsl:text>Too many bits (</xsl:text>
             <xsl:value-of select="Protocol/BitspecIrstream/IrStream/@numberOfBits"/>
             <xsl:text> &gt; 64)"</xsl:text>
-        </xsl:comment>
+            </xsl:with-param>
+        </xsl:call-template>
     </xsl:template>
 
     <!-- Nuke protocols with hierarchical BitspecIrstream -->
     <xsl:template match="NamedProtocol[Protocol/BitspecIrstream//BitspecIrstream]" priority='99'>
-        <xsl:comment>
-            <xsl:text> Protocol </xsl:text>
-            <xsl:value-of select="@name"/>
-            <xsl:text> omitted: Hierarchical BitspecIrStreams </xsl:text>
-        </xsl:comment>
+        <xsl:call-template name="omitted-protocol">
+            <xsl:with-param name="msg">Hierarchical BitspecIrStreams</xsl:with-param>
+        </xsl:call-template>
     </xsl:template>
 
     <!-- Nuke biphase protocols with Gap between FiniteBitFields -->
     <xsl:template match="NamedProtocol[Protocol[@biphase='true']//IrStream/Gap[preceding-sibling::FiniteBitField and following-sibling::FiniteBitField]]" priority='399'>
-        <xsl:comment>
-            <xsl:text> Protocol </xsl:text>
-            <xsl:value-of select="@name"/>
-            <xsl:text> omitted: Interleaved bitfields and durations</xsl:text>
-        </xsl:comment>
+        <xsl:call-template name="omitted-protocol">
+            <xsl:with-param name="msg">Interleaved bitfields and durations</xsl:with-param>
+        </xsl:call-template>
     </xsl:template>
 
     <!-- Nuke protocols with non-constant bitlength -->
     <xsl:template match="NamedProtocol[Protocol/BitspecIrstream/NormalForm/*/FiniteBitField/Width[not(Number)]]" priority="999">
-        <xsl:comment>
-            <xsl:text> Protocol </xsl:text>
-            <xsl:value-of select="@name"/>
-            <xsl:text> omitted: Variable number of bits </xsl:text>
-        </xsl:comment>
+        <xsl:call-template name="omitted-protocol">
+            <xsl:with-param name="msg">Variable number of bits</xsl:with-param>
+        </xsl:call-template>
     </xsl:template>
 
     <!-- Protocol with assignments do not fit into Lirc -->
     <xsl:template match="NamedProtocol[Protocol[.//Assignment and not(@toggle='true')]]" priority="10">
-        <xsl:comment>
-            <xsl:text> Protocol </xsl:text>
-            <xsl:value-of select="@name"/>
-            <xsl:text> omitted: Assignment cannot be done in the Lirc framework </xsl:text>
-        </xsl:comment>
+        <xsl:call-template name="omitted-protocol">
+            <xsl:with-param name="msg">Assignment cannot be done in the Lirc framework</xsl:with-param>
+        </xsl:call-template>
     </xsl:template>
-
-    <!-- Protocols with assignments do not fit into Lirc -->
-    <!--xsl:template match="NamedProtocol[Protocol/BitspecIrstream[@interleavingOk='false']]" priority="9">
-        <xsl:comment>
-            <xsl:text> Protocol </xsl:text>
-            <xsl:value-of select="@name"/>
-            <xsl:text> omitted: interleavingOk is false </xsl:text>
-        </xsl:comment>
-    </xsl:template-->
 
     <!-- Expressions as bitfields not implemented yet -->
     <xsl:template match="NamedProtocol[.//Data/Expression]">
-        <xsl:comment>
-            <xsl:text> Protocol </xsl:text>
-            <xsl:value-of select="@name"/>
-            <xsl:text> omitted: Expressions as bitfields not implemented yet </xsl:text>
-        </xsl:comment>
+        <xsl:call-template name="omitted-protocol">
+            <xsl:with-param name="msg">Expressions as bitfields not implemented yet</xsl:with-param>
+        </xsl:call-template>
     </xsl:template>
 
     <!-- Variations not implemented yet -->
@@ -293,11 +284,9 @@ end remote
     <xsl:template match="NamedProtocol[Protocol[not(@pwm2='true')
                                                 and not(@pwm4='true')
                                                 and not(@biphase='true')]]" priority="1">
-        <xsl:comment>
-            <xsl:text> Protocol </xsl:text>
-            <xsl:value-of select="@name"/>
-            <xsl:text> omitted: not one of the simple types (pwm2, pwm4, biphase) </xsl:text>
-        </xsl:comment>
+        <xsl:call-template name="omitted-protocol">
+            <xsl:with-param name="msg">not one of the simple types (pwm2, pwm4, biphase)</xsl:with-param>
+        </xsl:call-template>
     </xsl:template>
 
     <!-- Expressions as finitely repeating sequences not implemented -->
