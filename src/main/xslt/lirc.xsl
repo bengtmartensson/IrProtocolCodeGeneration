@@ -328,8 +328,16 @@ begin remote&#10;&#9;name&#9;&#9;</axsl:text>
 <xsl:apply-templates select="BitspecIrstream" mode="numberOfBits"/>
 &#9;flags&#9;&#9;<xsl:apply-templates select="@pwm2"/><xsl:apply-templates select="@pwm4"/><xsl:apply-templates select="@biphase"/>
             <xsl:apply-templates select="BitspecIrstream/NormalForm/*[FiniteBitField][1]/Extent" mode="flags"/>
-&#9;eps&#9;&#9;<xsl:value-of select="round(100*number(../@relative-tolerance))"/>
+&#9;eps&#9;&#9;<xsl:if test="../@relative-tolerance">
+    <xsl:value-of select="round(100*number(../@relative-tolerance))"/>
+</xsl:if>
+<xsl:if test="not(../@relative-tolerance)">
+    <xsl:value-of select="round(100*number(/NamedProtocols/@relative-tolerance))"/>
+</xsl:if>
 &#9;aeps&#9;&#9;<xsl:value-of select="round(../@absolute-tolerance)"/>
+<xsl:if test="not(../@absolute-tolerance)">
+    <xsl:value-of select="round(/NamedProtocols/@absolute-tolerance)"/>
+</xsl:if>
 <xsl:apply-templates select="BitspecIrstream/BitSpec/BareIrStream[1]" mode="define-zero"/>
 <xsl:apply-templates select="BitspecIrstream/BitSpec/BareIrStream[2]" mode="define-one"/>
 <xsl:apply-templates select="BitspecIrstream/BitSpec/BareIrStream[3]" mode="define-two"/>
