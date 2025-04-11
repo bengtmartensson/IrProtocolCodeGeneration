@@ -40,7 +40,7 @@
             <xsl:attribute name="multiSignal">true</xsl:attribute>
             <xsl:attribute name="simpleSequence">false</xsl:attribute>
             <xsl:attribute name="metadata">true</xsl:attribute>
-            <xsl:attribute name="xsi:schemaLocation" namespace="http://www.w3.org/2001/XMLSchema-instance">http://www.harctoolbox.org/exportformats http://www.harctoolbox.org/schemas/exportformats.xsd</xsl:attribute>
+            <xsl:attribute name="xsi:schemaLocation" namespace="http://www.w3.org/2001/XMLSchema-instance">http://www.harctoolbox.org/exportformats https://www.harctoolbox.org/schemas/exportformats.xsd</xsl:attribute>
 
             <axsl:stylesheet>
                 <xsl:namespace name="girr" select="'http://www.harctoolbox.org/Girr'"/>
